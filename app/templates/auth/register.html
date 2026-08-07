@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | AI Career Connect{% endblock %}
+{% block page_title %}Get Started with AI Career Connect{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 480px; margin: 2rem auto; padding: 2.5rem 2rem;">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <div style="width: 56px; height: 56px; border-radius: 16px; background: var(--accent-gradient); display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; margin-bottom: 1rem;">
+      <i class="fa-solid fa-user-plus"></i>
+    </div>
+    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">Create Your Free Account</h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary);">Start practicing mock voice interviews and analyzing resumes with AI.</p>
+  </div>
+
+  <form action="{{ url_for('auth.register') }}" method="POST">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem;">Username</label>
+        <input type="text" name="username" class="form-input" placeholder="alex_dev" required>
+      </div>
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem;">Email Address</label>
+        <input type="email" name="email" class="form-input" placeholder="alex@example.com" required>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem;">Target Career Role</label>
+        <input type="text" name="target_role" class="form-input" value="Senior Flask Developer" required>
+      </div>
+      <div>
+        <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem;">Career Level</label>
+        <select name="career_level" class="form-input">
+          <option value="Entry Level">Entry Level</option>
+          <option value="Mid Level" selected>Mid Level</option>
+          <option value="Senior Level">Senior Level</option>
+          <option value="Lead / Management">Lead / Management</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+      <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem;">Password</label>
+      <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+    </div>
+
+    <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem;">
+      <i class="fa-solid fa-rocket"></i> Register & Open Dashboard
+    </button>
+  </form>
+
+  <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+    Already have an account? <a href="{{ url_for('auth.login') }}" style="color: var(--accent-cyan); text-decoration: none; font-weight: 600;">Sign In</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analyzer | AI Career Connect{% endblock %}
+{% block page_title %}AI Resume Match & Analyzer{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+  <!-- Input Form Card -->
+  <div class="glass-card">
+    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;">Upload or Paste Resume</h3>
+    <form id="resumeForm">
+      <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Target Job Title</label>
+        <input type="text" id="targetJob" class="form-input" value="Senior Flask / Python Engineer" required>
+      </div>
+      <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Paste Resume Text</label>
+        <textarea id="resumeText" class="form-input" rows="12" placeholder="Paste your resume content, experience, skills, and summary here..." required></textarea>
+      </div>
+      <button type="submit" class="btn-primary" style="width: 100%;">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Resume with Mistral AI
+      </button>
+    </form>
+  </div>
+
+  <!-- Analysis Results Card -->
+  <div class="glass-card" id="resultCard" style="display: flex; flex-direction: column;">
+    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;">AI Match Feedback Report</h3>
+    <div id="analysisOutput" style="flex: 1; font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); white-space: pre-wrap;">
+      Submit your resume content on the left to generate an instant match score, missing skills analysis, and actionable improvement recommendations from Mistral AI.
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('resumeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const targetJob = document.getElementById('targetJob').value;
+  const resumeText = document.getElementById('resumeText').value;
+  const output = document.getElementById('analysisOutput');
+
+  output.innerText = "Analyzing resume against target role with Mistral AI...";
+
+  try {
+    const response = await fetch('/api/ai/resume/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target_job: targetJob, resume_text: resumeText })
+    });
+    const data = await response.json();
+    if (data.success) {
+      output.innerText = data.analysis;
+    } else {
+      output.innerText = "Failed to analyze resume.";
+    }
+  } catch (err) {
+    output.innerText = "Error connecting to AI service.";
+  }
+});
+</script>
+{% endblock %}

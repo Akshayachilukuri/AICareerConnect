@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | AI Career Connect{% endblock %}
+{% block page_title %}Career Analytics & Dashboard{% endblock %}
+
+{% block content %}
+<!-- KPI Summary Row -->
+<div class="dashboard-grid">
+  <div class="glass-card kpi-card">
+    <div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div>
+    <div>
+      <div class="kpi-label">Readiness Score</div>
+      <div class="kpi-value" id="val-readiness">88%</div>
+    </div>
+  </div>
+  <div class="glass-card kpi-card">
+    <div class="kpi-icon" style="color: var(--accent-violet);"><i class="fa-solid fa-file-shield"></i></div>
+    <div>
+      <div class="kpi-label">Resume Match</div>
+      <div class="kpi-value" id="val-resume">85%</div>
+    </div>
+  </div>
+  <div class="glass-card kpi-card">
+    <div class="kpi-icon" style="color: var(--success);"><i class="fa-solid fa-microphone-lines"></i></div>
+    <div>
+      <div class="kpi-label">Interview Avg</div>
+      <div class="kpi-value" id="val-interview">82/100</div>
+    </div>
+  </div>
+  <div class="glass-card kpi-card">
+    <div class="kpi-icon" style="color: var(--warning);"><i class="fa-solid fa-comments"></i></div>
+    <div>
+      <div class="kpi-label">AI Queries</div>
+      <div class="kpi-value" id="val-chats">14</div>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamic Charts Row -->
+<div class="charts-row">
+  <div class="glass-card">
+    <div class="chart-header">
+      <div class="chart-title">Weekly Career Preparation Activity</div>
+      <button onclick="loadDashboardStats()" class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+        <i class="fa-solid fa-rotate-right"></i> Refresh Stats
+      </button>
+    </div>
+    <div class="chart-container">
+      <canvas id="weeklyActivityChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="glass-card">
+    <div class="chart-header">
+      <div class="chart-title">Skill Match Radar</div>
+    </div>
+    <div class="chart-container">
+      <canvas id="skillRadarChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity Feed -->
+<div class="glass-card">
+  <div class="chart-header">
+    <div class="chart-title">Recent Career Preparation Logs</div>
+  </div>
+  <div class="activity-feed">
+    <div class="activity-item">
+      <div>
+        <strong style="color: var(--text-primary);">Asked Mistral AI:</strong> "System Design principles for microservices architecture"
+      </div>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">10 mins ago</span>
+    </div>
+    <div class="activity-item" style="border-left-color: var(--accent-cyan);">
+      <div>
+        <strong style="color: var(--text-primary);">Voice Practice Session:</strong> Completed 3 mock interview questions for Senior Software Engineer
+      </div>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">2 hours ago</span>
+    </div>
+    <div class="activity-item" style="border-left-color: var(--success);">
+      <div>
+        <strong style="color: var(--text-primary);">Resume Scored:</strong> 85/100 score for Lead Flask Backend Developer
+      </div>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">1 day ago</span>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

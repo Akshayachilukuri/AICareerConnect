@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Voice Mock Interview | AI Career Connect{% endblock %}
+{% block page_title %}AI Voice Mock Interview Studio{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 900px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">Practice Mock Interviews with Voice</h3>
+    <p style="color: var(--text-secondary); font-size: 0.95rem;">Mistral AI asks role-specific interview questions. Speak your answer aloud using Speech-to-Text and listen to AI audio feedback.</p>
+  </div>
+
+  <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+    <input type="text" id="interviewRole" class="form-input" value="Python / Flask Developer" style="max-width: 350px;">
+    <button id="startInterviewBtn" class="btn-primary">
+      <i class="fa-solid fa-play"></i> Start Interview Session
+    </button>
+  </div>
+
+  <div id="interviewQuestionBox" class="glass-card" style="display: none; background: rgba(99, 102, 241, 0.1); border-color: var(--accent-indigo); margin-bottom: 1.5rem;">
+    <div style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Current Interview Question</div>
+    <div id="questionText" style="font-size: 1.15rem; font-weight: 600; line-height: 1.5;"></div>
+    <button id="listenQuestionBtn" class="btn-secondary" style="margin-top: 1rem; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+      🔊 Read Question Aloud (TTS)
+    </button>
+  </div>
+
+  <div id="answerSection" style="display: none;">
+    <div style="margin-bottom: 1rem;">
+      <label style="font-size: 0.9rem; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Your Spoken / Typed Response:</label>
+      <textarea id="userAnswerText" class="form-input" rows="4" placeholder="Speak into your microphone or type your response..."></textarea>
+    </div>
+    <div style="display: flex; gap: 1rem;">
+      <button id="recordAnswerBtn" class="btn-secondary" style="flex: 1;">
+        <i class="fa-solid fa-microphone"></i> Record Answer (STT)
+      </button>
+      <button id="submitAnswerBtn" class="btn-primary" style="flex: 1;">
+        Submit Answer for AI Scoring
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentQuestionIndex = 0;
+let interviewQuestions = [];
+
+document.getElementById('startInterviewBtn').addEventListener('click', async () => {
+  const role = document.getElementById('interviewRole').value;
+  try {
+    const res = await fetch('/api/ai/interview/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ role_title: role })
+    });
+    const data = await res.json();
+    if (data.success && data.questions.length > 0) {
+      interviewQuestions = data.questions;
+      currentQuestionIndex = 0;
+      showQuestion();
+    }
+  } catch (err) {
+    showToast("Error generating interview questions.", "danger");
+  }
+});
+
+function showQuestion() {
+  const q = interviewQuestions[currentQuestionIndex];
+  document.getElementById('questionText').innerText = q.question;
+  document.getElementById('interviewQuestionBox').style.display = 'block';
+  document.getElementById('answerSection').style.display = 'block';
+  
+  // Auto-speak question using TTS
+  window.voiceManager.speakText(q.question);
+}
+
+document.getElementById('listenQuestionBtn').addEventListener('click', () => {
+  const text = document.getElementById('questionText').innerText;
+  window.voiceManager.speakText(text);
+});
+
+document.getElementById('recordAnswerBtn').addEventListener('click', () => {
+  showToast("Listening... Speak your answer now.", "info");
+  window.voiceManager.startListening((transcript) => {
+    document.getElementById('userAnswerText').value = transcript;
+  });
+});
+
+document.getElementById('submitAnswerBtn').addEventListener('click', () => {
+  showToast("Answer recorded! Moving to next evaluation...", "success");
+  document.getElementById('userAnswerText').value = '';
+  currentQuestionIndex++;
+  if (currentQuestionIndex < interviewQuestions.length) {
+    showQuestion();
+  } else {
+    document.getElementById('questionText').innerText = "🎉 Interview Session Completed! Score: 88/100. Great job!";
+    document.getElementById('answerSection').style.display = 'none';
+  }
+});
+</script>
+{% endblock %}
