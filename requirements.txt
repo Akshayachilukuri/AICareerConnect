@@ -6,5 +6,9 @@ requests==2.31.0
 gTTS==2.5.1
 SpeechRecognition==3.10.1
 werkzeug==3.0.1
+<<<<<<< HEAD
 # production
 gunicorn==20.1.0
+=======
+gunicorn
+>>>>>>> d51cd5e109e5c84da40a87e62a7c8272c27f3e60
